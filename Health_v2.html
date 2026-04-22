@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康管理評估建議 | 專屬28天行動計畫</title>
+
+    <!-- ✅ OG / LINE 縮圖 Meta Tags -->
+    <meta property="og:title" content="專屬28天健康管理計畫｜免費評估工具">
+    <meta property="og:description" content="輸入身體數據，立即獲得 BMI・BMR・TDEE 個人化分析與營養建議">
+    <meta property="og:image" content="https://i.meee.com.tw/rMK5BsX.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_TW">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://i.meee.com.tw/rMK5BsX.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        /* ── 主色盤（全站統一使用） ── */
+                        navy:    '#1d3461',   /* 深藍：標題、主按鈕         */
+                        ocean:   '#1e5f7a',   /* 深藍緑：次要強調           */
+                        teal:    '#0f9e9b',   /* 青：數值、高亮標籤         */
+                        gold:    '#d4870a',   /* 金：裝飾、Border、徽章     */
+                        bgbase:  '#edf2f7',   /* 頁面底色                   */
+                    },
+                    fontFamily: {
+                        sans:  ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                    },
+                    boxShadow: {
+                        'card':  '0 4px 18px -2px rgba(29,52,97,0.09), 0 2px 6px -1px rgba(0,0,0,0.04)',
+                        'lift':  '0 8px 24px -4px rgba(29,52,97,0.18)',
+                        'inner-sm': 'inset 0 1px 3px rgba(0,0,0,0.06)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ═══════ 基礎背景 ═══════ */
+        body {
+            background-color: #edf2f7;
+            background-image:
+                linear-gradient(160deg, rgba(15,158,155,0.05) 0%, transparent 45%),
+                linear-gradient(340deg, rgba(29,52,97,0.04) 0%, transparent 45%),
+                radial-gradient(#c5d3e0 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 22px 22px;
+        }
+
+        /* ═══════ 動畫 ═══════ */
+        .fade-in { animation: fadeIn 0.45s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(7px); }
+            to   { opacity: 1; transform: translateY(0);   }
+        }
+
+        /* ═══════ 去除 number 箭頭 ═══════ */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* ═══════ 表單輸入框 ═══════ */
+        .form-input {
+            border: 1.5px solid #d1d9e0;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: #334155;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #0f9e9b;
+            box-shadow: 0 0 0 3px rgba(15,158,155,0.14);
+            background: #fff;
+        }
+        .form-input.err {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+        }
+
+        /* ═══════ 主按鈕 ═══════ */
+        .btn-primary {
+            background: linear-gradient(135deg, #1d3461 0%, #122248 100%);
+            border: 1.5px solid rgba(212,135,10,0.55);
+            transition: all .3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(29,52,97,0.32);
+            transform: translateY(-1.5px);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* ═══════ Chip 複選標籤（純 CSS，不依賴 JS inline style） ═══════ */
+        .chip-wrap { cursor: pointer; }
+        .chip-wrap input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .chip-body {
+            display: inline-block;
+            padding: 4px 11px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 999px;
+            color: #64748b;
+            background: #fff;
+            transition: all .2s ease;
+            user-select: none;
+        }
+        .chip-wrap:hover .chip-body {
+            border-color: #0f9e9b;
+            color: #0f9e9b;
+        }
+        .chip-wrap input:checked ~ .chip-body {
+            background: linear-gradient(135deg, #0f9e9b, #0b8481);
+            color: #fff;
+            border-color: #0f9e9b;
+            box-shadow: 0 2px 8px rgba(15,158,155,0.28);
+        }
+
+        /* ═══════ 桌機全版設計 ═══════ */
+        @media (min-width: 1024px) {
+            .app-wrap { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+            .main-area { flex: 1; overflow: hidden; }
+        }
+
+        /* ═══════ Toast 通知 ═══════ */
+        #toast {
+            position: fixed; top: 1.1rem; right: 1.1rem; z-index: 9999;
+            padding: .6rem 1.25rem; border-radius: .6rem;
+            font-size: .78rem; font-weight: 500; letter-spacing: .01em;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+            opacity: 0; pointer-events: none;
+            transform: translateY(-10px);
+            transition: opacity .3s ease, transform .3s ease;
+        }
+        #toast.visible  { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        #toast.ok  { background: linear-gradient(135deg,#0f9e9b,#0b8481); color:#fff; }
+        #toast.err { background: linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; }
+
+        /* ═══════ BMI 進度條 ═══════ */
+        .bmi-rail {
+            height: 5px; border-radius: 99px; margin-top: 6px;
+            background: linear-gradient(to right,
+                #60a5fa 0%,      /* 過輕 — 藍 */
+                #2dd4bf 22%,     /* 過渡 */
+                #10b981 35%,     /* 正常 — 綠 */
+                #fbbf24 60%,     /* 過重 — 橙黃 */
+                #f97316 75%,
+                #ef4444 100%);   /* 肥胖 — 紅 */
+            position: relative;
+        }
+        .bmi-pin {
+            position: absolute; top: 50%;
+            transform: translate(-50%,-50%);
+            width: 11px; height: 11px;
+            background: #fff;
+            border: 2.5px solid #1d3461;
+            border-radius: 50%;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.22);
+            transition: left .55s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        /* ═══════ 統計卡片 ═══════ */
+        .stat-card {
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1.5px solid rgba(29,52,97,0.08);
+            background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+            position: relative; overflow: hidden;
+        }
+        .stat-card-teal {
+            background: linear-gradient(145deg, #f0fdfc 0%, #e6f9f8 100%);
+            border-color: rgba(15,158,155,0.18);
+        }
+        .stat-card-navy {
+            background: linear-gradient(145deg, #f0f4ff 0%, #e8eeff 100%);
+            border-color: rgba(29,52,97,0.14);
+        }
+        .stat-card-gold {
+            background: linear-gradient(145deg, #fffbf0 0%, #fff4db 100%);
+            border-color: rgba(212,135,10,0.18);
+        }
+        .stat-card-soft {
+            background: linear-gradient(145deg, #f5f7ff 0%, #eef2fc 100%);
+            border-color: rgba(100,116,139,0.12);
+        }
+
+        /* ═══════ 分隔線彩帶 ═══════ */
+        .brand-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, #1d3461 0%, #0f9e9b 55%, #d4870a 100%);
+        }
+
+        /* ═══════ Header 左側裝飾線 ═══════ */
+        .title-accent {
+            width: 30px; height: 3px; border-radius: 2px;
+            background: linear-gradient(90deg, #0f9e9b, #d4870a);
+            margin-bottom: 3px;
+        }
+
+        /* ═══════ 自訂捲軸 ═══════ */
+        .scroll-y::-webkit-scrollbar { width: 4px; }
+        .scroll-y::-webkit-scrollbar-track { background: transparent; }
+        .scroll-y::-webkit-scrollbar-thumb { background: #c8d3df; border-radius: 2px; }
+        .scroll-y::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ═══════ 列印樣式 ═══════ */
+        @media print {
+            body { background: #fff !important; background-image: none !important; font-size: 11pt; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            header { box-shadow: none !important; }
+            .app-wrap { height: auto !important; overflow: visible !important; }
+            .main-area { overflow: visible !important; display: block !important; }
+            #resultSection { grid-column: span 12 !important; height: auto !important; }
+            #resultSection .flex-col { overflow: visible !important; }
+            .stat-card { break-inside: avoid; }
+        }
+        .print-only { display: none; }
+    </style>
+</head>
+
+<body class="font-sans text-slate-800 antialiased app-wrap">
+
+<!-- ─── Toast ─── -->
+<div id="toast" role="status" aria-live="assertive" aria-atomic="true"></div>
+
+<!-- ─── 列印用資料列 ─── -->
+<div class="print-only px-6 py-2 text-xs text-slate-500 border-b border-gray-200" id="printMeta"></div>
+
+<!-- ─── Header 頂部彩帶 ─── -->
+<div class="brand-stripe no-print"></div>
+
+<!-- ─── Header ─── -->
+<header class="w-full bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-100 py-2.5 md:py-3 shrink-0 z-10 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+        <!-- Logo + 標題 -->
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 flex-shrink-0 drop-shadow">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                    <path d="M50 5 L10 20 L10 50 C10 75 35 90 50 95 C65 90 90 75 90 50 L90 20 Z"
+                          fill="none" stroke="#1d3461" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M50 12 L18 25 L18 50 C18 70 38 82 50 87 C62 82 82 70 82 50 L82 25 Z"
+                          fill="#f0f6ff" stroke="#d4870a" stroke-width="2"/>
+                    <ellipse cx="50" cy="50" rx="24" ry="9" fill="none" stroke="#0f9e9b" stroke-width="2"
+                             transform="rotate(45 50 50)"/>
+                    <ellipse cx="50" cy="50" rx="24" ry="9" fill="none" stroke="#0f9e9b" stroke-width="2"
+                             transform="rotate(-45 50 50)"/>
+                    <path d="M50 58 C50 58 41 48 41 43 C41 39 45 37 47 40 C50 43 50 43 50 43
+                             C50 43 50 43 53 40 C55 37 59 39 59 43 C59 48 50 58 50 58 Z" fill="#d4870a"/>
+                </svg>
+            </div>
+            <div>
+                <div class="title-accent"></div>
+                <h1 class="text-lg md:text-xl font-serif font-bold text-navy tracking-wide leading-tight">
+                    健康管理評估建議
+                </h1>
+                <p class="text-[11px] md:text-xs font-medium tracking-wider" style="color:#0f9e9b">
+                    提供個人化身體數據評估與28天行動計畫
+                </p>
+            </div>
+        </div>
+
+        <!-- 右側：版本 + 按鈕 -->
+        <div class="flex items-center gap-2.5">
+            <span id="versionBadge"
+                  class="hidden md:inline text-[9px] font-mono text-slate-300 border border-slate-100 px-1.5 py-0.5 rounded">
+            </span>
+            <button id="btnCopyLine"
+                    class="hidden md:flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                           text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
+                <i class="ph ph-chat-circle-text"></i> 複製 LINE 摘要
+            </button>
+            <button id="btnPrint"
+                    class="hidden md:flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5
+                           rounded-lg transition shadow-sm"
+                    style="background:linear-gradient(135deg,#1d3461,#122248)">
+                <i class="ph ph-printer"></i> 列印 / 截圖
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ─── 主體 ─── -->
+<main class="max-w-7xl mx-auto w-full px-4 py-4
+             grid grid-cols-1 lg:grid-cols-12 gap-5
+             main-area overflow-y-auto lg:overflow-hidden">
+
+    <!-- ═══════════ 左欄：輸入 ═══════════ -->
+    <section class="lg:col-span-4 h-full flex flex-col no-print">
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-5 flex-1 flex flex-col justify-between">
+
+            <!-- 欄位標題 -->
+            <div>
+                <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-slate-100">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background:rgba(29,52,97,0.06)">
+                        <i class="ph ph-clipboard-text text-lg" style="color:#d4870a"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-serif font-semibold text-navy">身體數據與生活型態</h2>
+                        <p class="text-[10px] text-slate-400 mt-0.5">任一欄位變更即即時計算</p>
+                    </div>
+                </div>
+
+                <form id="assessmentForm" class="space-y-3.5">
+
+                    <!-- 1. 性別 & 2. 年齡 -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">
+                                性別
+                            </label>
+                            <div class="relative">
+                                <select id="gender"
+                                        class="form-input w-full px-3 py-1.5 text-sm pr-7 appearance-none">
+                                    <option value="male">男</option>
+                                    <option value="female" selected>女</option>
+                                </select>
+                                <i class="ph ph-caret-down absolute right-2 top-2.5 text-slate-400
+                                          pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">
+                                年齡 <span class="normal-case font-normal">(歲)</span>
+                            </label>
+                            <input type="number" id="age" value="40"
+                                   class="form-input w-full px-3 py-1.5 text-sm"
+                                   aria-describedby="ageError">
+                            <p id="ageError" class="hidden text-[10px] text-red-500 mt-0.5">
+                                請輸入 1–120 歲
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. 身高 & 4. 體重 -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">
+                                身高 <span class="normal-case font-normal">(cm)</span>
+                            </label>
+                            <input type="number" id="height" value="160"
+                                   class="form-input w-full px-3 py-1.5 text-sm"
+                                   aria-describedby="heightError">
+                            <p id="heightError" class="hidden text-[10px] text-red-500 mt-0.5">
+                                請輸入 100–250 cm
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">
+                                體重 <span class="normal-case font-normal">(kg)</span>
+                            </label>
+                            <input type="number" id="weight" value="65"
+                                   class="form-input w-full px-3 py-1.5 text-sm"
+                                   aria-describedby="weightError">
+                            <p id="weightError" class="hidden text-[10px] text-red-500 mt-0.5">
+                                請輸入 20–300 kg
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 5. 日常活動量 -->
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">
+                            日常活動量
+                        </label>
+                        <div class="relative">
+                            <select id="activity"
+                                    class="form-input w-full px-3 py-1.5 text-sm pr-7 appearance-none">
+                                <option value="1.2">久坐 / 無運動 (辦公室族)</option>
+                                <option value="1.375">輕度活動 (每週運動 1–3 天)</option>
+                                <option value="1.55">中度活動 (每週運動 3–5 天)</option>
+                                <option value="1.725">高度活動 (每週運動 6–7 天)</option>
+                            </select>
+                            <i class="ph ph-caret-down absolute right-2 top-2.5 text-slate-400
+                                      pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- 6. 肥胖類型（由 JS 資料驅動生成） -->
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+                            肥胖類型 <span class="normal-case font-normal">(可複選)</span>
+                        </label>
+                        <div id="chipContainer" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- 按鈕區 -->
+            <div class="pt-3 mt-2 border-t border-slate-100 space-y-2">
+                <div class="flex gap-2">
+                    <button type="button" id="btnCalculate"
+                            class="flex-1 btn-primary text-white text-sm font-semibold rounded-xl py-2.5
+                                   flex justify-center items-center gap-2 shadow">
+                        <i class="ph ph-calculator text-base" style="color:#f5c158"></i> 開始評估
+                    </button>
+                    <button type="button" id="btnReset"
+                            class="w-1/3 bg-slate-50 hover:bg-slate-100 active:bg-slate-200
+                                   text-slate-500 text-sm font-medium rounded-xl py-2.5
+                                   transition border border-slate-200 shadow-sm">
+                        重設
+                    </button>
+                </div>
+                <!-- 行動版匯出 -->
+                <div class="flex gap-2 md:hidden">
+                    <button id="btnCopyLineMobile"
+                            class="flex-1 flex items-center justify-center gap-1.5
+                                   bg-emerald-500 hover:bg-emerald-600 text-white
+                                   text-xs font-semibold py-2 rounded-xl transition">
+                        <i class="ph ph-chat-circle-text"></i> 複製 LINE 摘要
+                    </button>
+                    <button id="btnPrintMobile"
+                            class="flex-1 flex items-center justify-center gap-1.5 text-white
+                                   text-xs font-semibold py-2 rounded-xl transition"
+                            style="background:linear-gradient(135deg,#1d3461,#122248)">
+                        <i class="ph ph-printer"></i> 列印
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ 右欄：結果 ═══════════ -->
+    <section class="lg:col-span-8 h-full flex flex-col" id="resultSection">
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-4 md:p-5
+                    flex-1 flex flex-col h-full">
+
+            <!-- 結果標題列 -->
+            <div class="flex items-center justify-between mb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                         style="background:rgba(29,52,97,0.06)">
+                        <i class="ph ph-shield-check text-lg text-navy"></i>
+                    </div>
+                    <div>
+                        <div class="title-accent"></div>
+                        <h2 class="text-base font-serif font-bold text-navy">專屬 28 天健康行動計畫</h2>
+                    </div>
+                </div>
+                <!-- 達標預估小卡 -->
+                <div id="daysCard"
+                     class="hidden text-center px-3 py-1.5 rounded-xl border"
+                     style="background:rgba(15,158,155,0.07); border-color:rgba(15,158,155,0.22)">
+                    <p class="text-[9px] text-slate-400">預估達標</p>
+                    <p class="text-sm font-bold leading-none" style="color:#0f9e9b" id="resDays">--</p>
+                    <p class="text-[8px] text-slate-400 mt-0.5">天後</p>
+                </div>
+            </div>
+
+            <!-- 結果捲動區 -->
+            <div class="flex flex-col gap-3 flex-1 overflow-y-auto pr-0.5 scroll-y"
+                 aria-live="polite" aria-atomic="false">
+
+                <!-- ── 區塊①：核心數據 (BMI / BMR / TDEE) ── -->
+                <div class="flex flex-col gap-2 shrink-0">
+
+                    <div class="grid grid-cols-3 gap-2">
+
+                        <!-- BMI -->
+                        <div class="stat-card flex flex-col justify-center">
+                            <i class="ph-fill ph-person text-[2.2rem] absolute -right-1 -bottom-1
+                                      text-teal opacity-[0.07] pointer-events-none"></i>
+                            <p class="text-[10px] font-semibold text-slate-400 mb-0.5">BMI 身體質量</p>
+                            <p class="text-[1.35rem] font-bold leading-none" id="resBMI">--</p>
+                            <span id="resBMIBadge"
+                                  class="mt-1 w-fit text-[9px] font-bold px-1.5 py-0.5 rounded-full"></span>
+                            <!-- BMI 進度條 -->
+                            <div class="bmi-rail mt-2">
+                                <div class="bmi-pin" id="bmiPin" style="left:0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- BMR -->
+                        <div class="stat-card flex flex-col justify-center">
+                            <i class="ph-fill ph-flame text-[2.2rem] absolute -right-1 -bottom-1
+                                      text-gold opacity-[0.10] pointer-events-none"></i>
+                            <p class="text-[10px] font-semibold text-slate-400 mb-0.5">BMR 基礎代謝</p>
+                            <p class="text-[1.35rem] font-bold leading-none text-navy" id="resBMR">--</p>
+                            <p class="text-[9px] text-slate-400 mt-0.5">kcal / 天</p>
+                        </div>
+
+                        <!-- TDEE -->
+                        <div class="stat-card stat-card-teal flex flex-col justify-center">
+                            <i class="ph-fill ph-lightning text-[2.2rem] absolute -right-1 -bottom-1
+                                      text-teal opacity-[0.12] pointer-events-none"></i>
+                            <p class="text-[10px] font-semibold text-slate-400 mb-0.5">TDEE 總消耗</p>
+                            <p class="text-[1.35rem] font-bold leading-none text-teal" id="resTDEE">--</p>
+                            <p class="text-[9px] text-slate-400 mt-0.5">kcal / 天</p>
+                        </div>
+                    </div>
+
+                    <!-- 標準體重 & 健康體脂率 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="stat-card stat-card-navy flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-semibold text-slate-400">標準體重 (BMI=22)</p>
+                                <p class="text-lg font-bold text-navy leading-none mt-0.5">
+                                    <span id="resStdWeight">--</span>
+                                    <span class="text-xs font-normal text-slate-400"> kg</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] text-slate-400 mb-0.5">目前差距</p>
+                                <p class="text-sm font-bold" id="resWeightDiff">--</p>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-card-teal flex flex-col justify-center">
+                            <p class="text-[10px] font-semibold text-slate-400">標準健康體脂率</p>
+                            <p class="text-lg font-bold text-teal leading-none mt-0.5" id="resStdBF">--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 區塊②：三大指標（熱量 / 飲水 / 蛋白質） ── -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 shrink-0">
+
+                    <!-- 建議熱量 -->
+                    <div class="stat-card stat-card-teal flex flex-col gap-1.5">
+                        <h3 class="text-[11px] font-serif font-bold text-navy flex items-center gap-1">
+                            <i class="ph-fill ph-fork-knife" style="color:#d4870a"></i>
+                            建議攝取熱量
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <div class="rounded-lg px-2 py-1.5 text-center shrink-0 w-[72px] border"
+                                 style="background:rgba(15,158,155,0.10); border-color:rgba(15,158,155,0.22)">
+                                <p class="text-xl font-bold text-teal leading-none" id="resCalories">--</p>
+                                <p class="text-[8px] text-slate-400 mt-0.5">kcal / 天</p>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] text-slate-600 leading-snug">
+                                    選擇<span class="font-bold text-teal">低升糖</span>原型食物，
+                                    優先補充<span class="font-bold text-navy">蛋白質</span>。
+                                </p>
+                                <p id="caloriesWarning"
+                                   class="hidden text-[9px] font-bold text-amber-600 mt-0.5">
+                                    ⚠️ 已調整至安全最低值
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 每日飲水 -->
+                    <div class="stat-card stat-card-navy flex flex-col gap-1.5">
+                        <h3 class="text-[11px] font-serif font-bold text-navy flex items-center gap-1">
+                            <i class="ph-fill ph-drop text-teal"></i>
+                            每日建議飲水
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <div class="rounded-lg px-2 py-1.5 text-center shrink-0 w-[72px] border"
+                                 style="background:rgba(29,52,97,0.06); border-color:rgba(29,52,97,0.12)">
+                                <p class="text-xl font-bold text-navy leading-none" id="resWater">--</p>
+                                <p class="text-[8px] text-slate-400 mt-0.5">ml / 天</p>
+                            </div>
+                            <p class="text-[10px] text-slate-600 leading-snug flex-1">
+                                每早起床第一件事：<br>
+                                記錄<span class="font-bold text-navy">體重與體脂</span>。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 蛋白質 -->
+                    <div class="stat-card stat-card-gold flex flex-col gap-1.5">
+                        <h3 class="text-[11px] font-serif font-bold text-navy flex items-center gap-1">
+                            <i class="ph-fill ph-egg text-gold"></i>
+                            蛋白質建議攝取
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <div class="rounded-lg px-2 py-1.5 text-center shrink-0 w-[72px] border"
+                                 style="background:rgba(212,135,10,0.10); border-color:rgba(212,135,10,0.20)">
+                                <p class="text-base font-bold text-gold leading-none" id="resProtein">--</p>
+                                <p class="text-[8px] text-slate-400 mt-0.5">g / 天</p>
+                            </div>
+                            <p class="text-[10px] text-slate-600 leading-snug flex-1">
+                                減重期維持<span class="font-bold text-gold">肌肉量</span>的關鍵，
+                                建議分散三餐攝取。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 區塊③：專屬營養輔助建議 ── -->
+                <div class="rounded-xl p-3 flex-1 flex flex-col min-h-[76px]"
+                     style="background:linear-gradient(145deg,rgba(15,158,155,0.06) 0%,rgba(15,158,155,0.02) 100%);
+                            border: 1.5px solid rgba(15,158,155,0.20)">
+                    <h3 class="text-[11px] font-serif font-bold text-navy flex items-center gap-1.5 mb-1">
+                        <i class="ph-fill ph-pill text-gold"></i>
+                        專屬營養輔助建議
+                        <span class="text-[9px] font-normal text-slate-400 ml-auto">依肥胖類型智能配對</span>
+                    </h3>
+                    <p class="text-[10px] text-slate-500 mb-2">
+                        根據您勾選的肥胖類型，系統為您統整並配對以下抗氧化與輔助方案：
+                    </p>
+                    <div id="supplementList" class="flex flex-wrap gap-1.5 text-[11px] font-medium"></div>
+                </div>
+
+                <!-- ── 區塊④：核心理念 ── -->
+                <div class="rounded-xl p-3 shrink-0 text-center relative overflow-hidden
+                            flex items-center justify-center"
+                     style="background: linear-gradient(135deg, #1a2f5e 0%, #122248 55%, #0c1a35 100%)">
+                    <!-- 背景光暈 -->
+                    <div class="absolute inset-0 pointer-events-none"
+                         style="background:
+                             radial-gradient(ellipse at 15% 50%, rgba(15,158,155,0.18) 0%, transparent 55%),
+                             radial-gradient(ellipse at 85% 50%, rgba(212,135,10,0.14) 0%, transparent 55%)">
+                    </div>
+                    <i class="ph-fill ph-quotes absolute -top-1 -left-1 text-3xl"
+                       style="color:rgba(255,255,255,0.08)"></i>
+                    <p class="relative z-10 text-[11px] md:text-xs font-serif leading-relaxed
+                              font-light tracking-wide m-0"
+                       style="color:rgba(255,255,255,0.88)">
+                        「任何果都有因，健康沒有捷徑。只有踏實執行這 28 天計畫，不斷充實健康知識，
+                        <span class="font-bold" style="color:#f5c158">
+                            身體一定會給你最理想的回饋。
+                        </span>」
+                    </p>
+                </div>
+
+            </div><!-- /捲動區 -->
+        </div>
+    </section>
+</main>
+
+<!-- ═══════════════════════════════════════════
+     JavaScript
+     ═══════════════════════════════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* ────────────────────────────────────────────
+       1. 版本配置物件 — 所有魔術數字集中管理
+       ──────────────────────────────────────────── */
+    const APP_CONFIG = Object.freeze({
+        version:           '3.0.0',
+        buildDate:         '2026-04-22',
+
+        /* 計算參數 */
+        calorieDeficit:    400,     // 每日建議熱量赤字 (kcal)
+        waterRatioBase:    35,      // 飲水基礎係數 (ml/kg)
+        waterBonusHigh:    400,     // 高強度活動補充飲水 (ml)
+        stdBmiBase:        22,      // 標準體重所用 BMI 基準值
+        proteinMinRatio:   1.2,     // 蛋白質最低係數 (g/kg 體重)
+        proteinMaxRatio:   1.6,     // 蛋白質最高係數 (g/kg 體重)
+        minCalMale:        1500,    // 男性熱量安全底線 (kcal)
+        minCalFemale:      1200,    // 女性熱量安全底線 (kcal)
+        kcalPerKg:         7700,    // 燃燒 1 kg 脂肪所需熱量 (kcal)
+
+        /* 輸入驗證範圍 */
+        ageMin: 1,   ageMax: 120,
+        heightMin: 100, heightMax: 250,
+        weightMin: 20,  weightMax: 300,
+
+        /* BMI 等級（WHO / 台灣衛福部 標準） */
+        bmiThresholds: [18.5, 24, 27],   // 台灣標準：<18.5過輕, 18.5-24正常, 24-27過重, ≥27肥胖
+        bmiLabels:     ['過輕', '正常', '過重', '肥胖'],
+        bmiColors: [
+            { text: 'color:#2563eb', badge: 'background:#dbeafe; color:#1d4ed8' },
+            { text: 'color:#059669', badge: 'background:#d1fae5; color:#065f46' },
+            { text: 'color:#d97706', badge: 'background:#fef3c7; color:#92400e' },
+            { text: 'color:#dc2626', badge: 'background:#fee2e2; color:#991b1b' },
+        ],
+    });
+
+    /* 顯示版本號 */
+    document.getElementById('versionBadge').textContent = `v${APP_CONFIG.version}`;
+
+    /* ────────────────────────────────────────────
+       2. 肥胖類型資料（唯一事實來源，資料驅動生成 Chip）
+       ──────────────────────────────────────────── */
+    const OBESITY_DATA = [
+        { label: '遺傳',        supps: ['GL P-1'] },
+        { label: '不運動',      supps: ['辣木葉'] },
+        { label: '零食控',      supps: ['芒果茶'] },
+        { label: '澱粉控',      supps: ['白腎豆'] },
+        { label: '壓力及久坐',  supps: ['綜合維他命', '優質魚油', '具有抗氧化成份營養品'], defaultOn: true },
+        { label: '不太清楚',    supps: ['辣木葉', '芒果茶', '綜合維他命', '優質魚油', '具有抗氧化成份營養品'] },
+        { label: '喝水都胖',    supps: ['辣木葉', '芒果茶', '白腎豆', '綜合維他命', '優質魚油',
+                                        '具有抗氧化成份營養品', 'GL P-1', '高纖飲料'] },
+    ];
+
+    /* 動態生成 Chip 標籤 */
+    const chipContainer = document.getElementById('chipContainer');
+    OBESITY_DATA.forEach(({ label, defaultOn }) => {
+        const wrap  = document.createElement('label');
+        wrap.className = 'chip-wrap';
+        wrap.setAttribute('aria-label', label);
+
+        const inp = document.createElement('input');
+        inp.type    = 'checkbox';
+        inp.value   = label;
+        inp.className = 'sr-only';
+        if (defaultOn) inp.checked = true;
+
+        const body = document.createElement('span');
+        body.className = 'chip-body';
+        body.textContent = label;
+
+        wrap.appendChild(inp);
+        wrap.appendChild(body);
+        chipContainer.appendChild(wrap);
+    });
+
+    /* ────────────────────────────────────────────
+       3. DOM 選取
+       ──────────────────────────────────────────── */
+    const form       = document.getElementById('assessmentForm');
+    const inputs     = form.querySelectorAll('input[type="number"], select');
+    const checkboxes = chipContainer.querySelectorAll('input[type="checkbox"]');
+    const toast      = document.getElementById('toast');
+
+    const elBMI      = document.getElementById('resBMI');
+    const elBadge    = document.getElementById('resBMIBadge');
+    const elPin      = document.getElementById('bmiPin');
+    const elBMR      = document.getElementById('resBMR');
+    const elTDEE     = document.getElementById('resTDEE');
+    const elStdW     = document.getElementById('resStdWeight');
+    const elDiff     = document.getElementById('resWeightDiff');
+    const elBF       = document.getElementById('resStdBF');
+    const elCal      = document.getElementById('resCalories');
+    const elWater    = document.getElementById('resWater');
+    const elProtein  = document.getElementById('resProtein');
+    const elDays     = document.getElementById('resDays');
+    const elDaysCard = document.getElementById('daysCard');
+    const elSupps    = document.getElementById('supplementList');
+    const elCalWarn  = document.getElementById('caloriesWarning');
+    const elAgeErr   = document.getElementById('ageError');
+    const elHtErr    = document.getElementById('heightError');
+    const elWtErr    = document.getElementById('weightError');
+
+    /* 最新計算結果（供匯出使用，避免重複計算） */
+    let lastResult = {};
+
+    /* ────────────────────────────────────────────
+       4. 輔助函式
+       ──────────────────────────────────────────── */
+
+    /** 取得 BMI 等級 index */
+    function bmiIndex(bmi) {
+        const t = APP_CONFIG.bmiThresholds;
+        if (bmi < t[0]) return 0;
+        if (bmi < t[1]) return 1;
+        if (bmi < t[2]) return 2;
+        return 3;
+    }
+
+    /** BMI → 進度條百分比（顯示範圍 BMI 15~42） */
+    function bmiToPercent(bmi) {
+        return Math.min(Math.max((bmi - 15) / 27 * 100, 1), 99);
+    }
+
+    /** 顯示 Toast */
+    function showToast(msg, type = 'ok') {
+        toast.textContent = msg;
+        toast.className   = `visible ${type}`;
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => { toast.className = ''; }, 3000);
+    }
+
+    /** 單一欄位驗證 — 回傳是否通過 */
+    function validate(inputEl, errEl, testFn) {
+        const v  = parseFloat(inputEl.value);
+        const ok = !isNaN(v) && testFn(v);
+        errEl.classList.toggle('hidden', ok);
+        inputEl.classList.toggle('err', !ok);
+        return ok;
+    }
+
+    /* ────────────────────────────────────────────
+       5. 純計算核心（不碰 DOM）
+       ──────────────────────────────────────────── */
+    function calcMetrics(gender, age, height, weight, activity) {
+        const C  = APP_CONFIG;
+        const hm = height / 100;
+
+        /* BMI（保留 1 位小數） */
+        const bmi = parseFloat((weight / (hm * hm)).toFixed(1));
+
+        /* BMR — Mifflin-St Jeor 公式 */
+        let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+        bmr = Math.round(gender === 'male' ? bmr + 5 : bmr - 161);
+
+        /* TDEE */
+        const tdee = Math.round(bmr * activity);
+
+        /* 目標熱量 */
+        const minCal   = gender === 'male' ? C.minCalMale : C.minCalFemale;
+        let targetCal  = tdee - C.calorieDeficit;
+        const calWarn  = targetCal < minCal;
+        if (calWarn) targetCal = minCal;
+
+        /* 飲水（高強度活動加碼） */
+        const water = Math.round(
+            weight * C.waterRatioBase + (activity >= 1.725 ? C.waterBonusHigh : 0)
+        );
+
+        /* 標準體重 & 差距 */
+        const stdW = parseFloat((C.stdBmiBase * hm * hm).toFixed(1));
+        const diff = parseFloat((weight - stdW).toFixed(1));
+
+        /* 蛋白質 */
+        const proteinLow  = Math.round(weight * C.proteinMinRatio);
+        const proteinHigh = Math.round(weight * C.proteinMaxRatio);
+
+        /* 體脂率建議 */
+        const stdBf = gender === 'male' ? '15% ~ 25%' : '20% ~ 30%';
+
+        /* 預估達標天數（超標體重 ÷ 每日赤字） */
+        let daysToGoal = null;
+        if (diff > 0 && !calWarn) {
+            daysToGoal = Math.ceil((diff * C.kcalPerKg) / C.calorieDeficit);
+        }
+
+        /* 已選肥胖類型 & 營養品 */
+        const selectedTypes = [...checkboxes].filter(c => c.checked).map(c => c.value);
+        const suppSet       = new Set();
+        OBESITY_DATA.forEach(({ label, supps }) => {
+            if (selectedTypes.includes(label)) supps.forEach(s => suppSet.add(s));
+        });
+        const uniqueSupps = [...suppSet];
+
+        return { bmi, bmr, tdee, targetCal, calWarn, minCal,
+                 water, stdW, diff, proteinLow, proteinHigh, stdBf,
+                 daysToGoal, selectedTypes, uniqueSupps };
+    }
+
+    /* ────────────────────────────────────────────
+       6. 渲染結果（只負責更新 DOM）
+       ──────────────────────────────────────────── */
+    function renderResults(r, gender, age, height, weight, actLabel) {
+        const idx   = bmiIndex(r.bmi);
+        const style = APP_CONFIG.bmiColors[idx];
+
+        /* BMI 數值 + 徽章 + 進度條 */
+        elBMI.textContent  = r.bmi;
+        elBMI.setAttribute('style', style.text);
+        elBadge.textContent = APP_CONFIG.bmiLabels[idx];
+        elBadge.setAttribute('style', `${style.badge}; display:inline-block;
+            font-size:9px; font-weight:700; padding:2px 6px; border-radius:999px;
+            margin-top:4px;`);
+        elPin.style.left = `${bmiToPercent(r.bmi)}%`;
+
+        /* 數值卡片 */
+        elBMR.textContent     = r.bmr.toLocaleString();
+        elTDEE.textContent    = r.tdee.toLocaleString();
+        elCal.textContent     = r.targetCal.toLocaleString();
+        elWater.textContent   = r.water.toLocaleString();
+        elStdW.textContent    = r.stdW;
+        elBF.textContent      = r.stdBf;
+        elProtein.textContent = `${r.proteinLow}–${r.proteinHigh}`;
+        elCalWarn.classList.toggle('hidden', !r.calWarn);
+
+        /* 體重差距 */
+        if (r.diff > 0) {
+            elDiff.innerHTML = `<span style="color:#e53e3e">超標 ${r.diff} kg</span>`;
+        } else if (r.diff < 0) {
+            elDiff.innerHTML = `<span style="color:#0f9e9b">過輕 ${Math.abs(r.diff)} kg</span>`;
+        } else {
+            elDiff.innerHTML = `<span style="color:#0f9e9b">完美達標 ✓</span>`;
+        }
+
+        /* 達標預估 */
+        if (r.daysToGoal && r.daysToGoal > 0 && r.daysToGoal < 1000) {
+            elDays.textContent = r.daysToGoal;
+            elDaysCard.classList.remove('hidden');
+        } else {
+            elDaysCard.classList.add('hidden');
+        }
+
+        /* 營養品標籤 */
+        elSupps.innerHTML = '';
+        if (r.uniqueSupps.length === 0) {
+            const span = document.createElement('span');
+            span.className   = 'text-[10px] text-slate-400 italic';
+            span.textContent = '請於左側勾選肥胖類型以獲得建議';
+            elSupps.appendChild(span);
+        } else {
+            r.uniqueSupps.forEach(s => {
+                const tag  = document.createElement('div');
+                tag.className = 'flex items-center gap-1 bg-white rounded-lg shadow-sm px-2.5 py-1';
+                tag.setAttribute('style',
+                    'border: 1.5px solid rgba(15,158,155,0.28); color:#1d3461; font-size:11px');
+                const icon = document.createElement('i');
+                icon.className = 'ph-fill ph-check-circle';
+                icon.style.color = '#0f9e9b';
+                tag.appendChild(icon);
+                tag.appendChild(document.createTextNode(' ' + s));
+                elSupps.appendChild(tag);
+            });
+        }
+
+        /* 列印用個人資料 */
+        const now = new Date().toLocaleDateString('zh-TW',
+            { year:'numeric', month:'long', day:'numeric' });
+        document.getElementById('printMeta').textContent =
+            `評估日期：${now}　性別：${gender === 'male' ? '男' : '女'}　` +
+            `年齡：${age} 歲　身高：${height} cm　體重：${weight} kg　活動量：${actLabel}`;
+
+        /* 入場動畫 */
+        const rs = document.getElementById('resultSection');
+        rs.classList.remove('fade-in');
+        void rs.offsetWidth;   // 強制 reflow
+        rs.classList.add('fade-in');
+    }
+
+    /* ────────────────────────────────────────────
+       7. 計算主入口（驗證 → 計算 → 渲染 → 儲存）
+       ──────────────────────────────────────────── */
+    function calculateData() {
+        const C   = APP_CONFIG;
+        const gender   = document.getElementById('gender').value;
+        const actEl    = document.getElementById('activity');
+        const activity = parseFloat(actEl.value);
+        const actLabel = actEl.options[actEl.selectedIndex].text;
+
+        /* 驗證（三欄獨立，同時顯示各自錯誤訊息） */
+        const ageEl = document.getElementById('age');
+        const htEl  = document.getElementById('height');
+        const wtEl  = document.getElementById('weight');
+
+        const ageOk = validate(ageEl, elAgeErr, v => v >= C.ageMin  && v <= C.ageMax);
+        const htOk  = validate(htEl,  elHtErr,  v => v >= C.heightMin && v <= C.heightMax);
+        const wtOk  = validate(wtEl,  elWtErr,  v => v >= C.weightMin && v <= C.weightMax);
+        if (!ageOk || !htOk || !wtOk) return;
+
+        const age    = parseFloat(ageEl.value);
+        const height = parseFloat(htEl.value);
+        const weight = parseFloat(wtEl.value);
+
+        const metrics  = calcMetrics(gender, age, height, weight, activity);
+        lastResult     = { ...metrics, gender, age, height, weight, actLabel };
+        renderResults(metrics, gender, age, height, weight, actLabel);
+    }
+
+    /* ────────────────────────────────────────────
+       8. 組裝 LINE 文字
+       ──────────────────────────────────────────── */
+    function buildLineText() {
+        if (Object.keys(lastResult).length === 0) {
+            alert('請先點擊「開始評估」'); return null;
+        }
+        const r       = lastResult;
+        const now     = new Date().toLocaleDateString('zh-TW',
+                            { year:'numeric', month:'long', day:'numeric' });
+        const bmiLbl  = APP_CONFIG.bmiLabels[bmiIndex(r.bmi)];
+        const diffTxt = r.diff > 0 ? `超標 ${r.diff} kg`
+                      : r.diff < 0 ? `過輕 ${Math.abs(r.diff)} kg`
+                      : '完美達標';
+        const suppTxt = r.uniqueSupps.length > 0
+                      ? r.uniqueSupps.join('、')
+                      : '（請勾選肥胖類型）';
+        const typeTxt = r.selectedTypes.length > 0
+                      ? r.selectedTypes.join('、')
+                      : '未選擇';
+        const daysTxt = (r.daysToGoal && r.daysToGoal < 1000)
+                      ? `　⏱️ 預估達標：${r.daysToGoal} 天後\n`
+                      : '';
+
+        return [
+            `🌿 健康管理評估報告`,
+            `📅 評估日期：${now}`,
+            ``,
+            `👤 基本資料`,
+            `　性別：${r.gender === 'male' ? '男' : '女'} ／ 年齡：${r.age} 歲`,
+            `　身高：${r.height} cm ／ 體重：${r.weight} kg`,
+            `　活動量：${r.actLabel}`,
+            ``,
+            `📊 身體數據分析`,
+            `　BMI：${r.bmi}（${bmiLbl}）`,
+            `　BMR 基礎代謝：${r.bmr.toLocaleString()} kcal`,
+            `　TDEE 總消耗：${r.tdee.toLocaleString()} kcal`,
+            `　標準體重：${r.stdW} kg（目前 ${diffTxt}）`,
+            `　標準體脂率：${r.stdBf}`,
+            ``,
+            `🥗 28 天行動計畫`,
+            `　✅ 每日建議熱量：${r.targetCal.toLocaleString()} kcal${r.calWarn ? '（已調整至安全最低值）' : ''}`,
+            `　💧 每日飲水量：${r.water.toLocaleString()} ml`,
+            `　🥩 蛋白質攝取：${r.proteinLow}–${r.proteinHigh} g`,
+            daysTxt.trim(),
+            ``,
+            `💊 專屬營養輔助建議`,
+            `　肥胖類型：${typeTxt}`,
+            `　建議產品：${suppTxt}`,
+            ``,
+            `💬 「健康沒有捷徑，踏實執行 28 天，身體一定會給你最理想的回饋！」`,
+        ].filter(l => l !== undefined).join('\n');
+    }
+
+    /* ────────────────────────────────────────────
+       9. 複製 LINE 摘要（含舊瀏覽器 fallback）
+       ──────────────────────────────────────────── */
+    async function copyLineText() {
+        const text = buildLineText();
+        if (!text) return;
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast('✅ 已複製！可直接貼到 LINE', 'ok');
+        } catch {
+            /* Fallback：適用於 HTTP 環境或舊版瀏覽器 */
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+                document.body.appendChild(ta);
+                ta.focus(); ta.select();
+                document.execCommand('copy');   // deprecated but still works as fallback
+                document.body.removeChild(ta);
+                showToast('✅ 已複製！可直接貼到 LINE', 'ok');
+            } catch {
+                showToast('❌ 複製失敗，請手動選取文字', 'err');
+            }
+        }
+    }
+
+    /* ────────────────────────────────────────────
+       10. 列印
+       ──────────────────────────────────────────── */
+    function doPrint() {
+        if (Object.keys(lastResult).length === 0) {
+            alert('請先點擊「開始評估」'); return;
+        }
+        window.print();
+    }
+
+    /* ────────────────────────────────────────────
+       11. 事件綁定
+       ──────────────────────────────────────────── */
+    document.getElementById('btnCalculate').addEventListener('click', calculateData);
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+        form.reset();
+        checkboxes.forEach(cb => {
+            cb.checked = (cb.value === '壓力及久坐');
+        });
+        calculateData();
+    });
+
+    inputs.forEach(el => el.addEventListener('input', calculateData));
+    checkboxes.forEach(cb => cb.addEventListener('change', calculateData));
+
+    ['btnCopyLine', 'btnCopyLineMobile'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', copyLineText);
+    });
+
+    ['btnPrint', 'btnPrintMobile'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', doPrint);
+    });
+
+    /* ────────────────────────────────────────────
+       12. 頁面初始化
+       ──────────────────────────────────────────── */
+    calculateData();
+
+}); // DOMContentLoaded
+</script>
+
+</body>
+</html>
