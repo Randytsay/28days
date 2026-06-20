@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>健康管理評估建議 | 專屬28天行動計畫</title>
+    <title>健康管理評估紀錄 | 28天追蹤參考</title>
+    <meta name="description" content="依基本資料估算 BMI、BMR、TDEE 等一般成人數值，作為健康管理紀錄與課程討論參考；非醫療診斷工具。">
+    <meta name="theme-color" content="#1d3461">
 
     <!-- ✅ OG / LINE 縮圖 Meta Tags -->
-    <meta property="og:title" content="專屬28天健康管理計畫｜免費評估工具">
-    <meta property="og:description" content="輸入身體數據，立即獲得 BMI・BMR・TDEE 個人化分析與營養建議">
+    <meta property="og:title" content="28天健康管理紀錄｜BMI・BMR・TDEE 估算工具">
+    <meta property="og:description" content="輸入基本資料，取得 BMI、BMR、TDEE 等一般估算結果，作為健康管理紀錄參考">
     <meta property="og:image" content="https://i.meee.com.tw/rMK5BsX.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -185,6 +187,15 @@
             border-color: rgba(212,135,10,0.18);
         }
 
+        .notice-box {
+            border-radius: 16px;
+            padding: 14px 16px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+            border: 1.5px solid rgba(29,52,97,0.12);
+        }
+
+        .notice-box strong { color: #1d3461; }
+
         /* ═══════ 分隔線彩帶 ═══════ */
         .brand-stripe {
             height: 4px;
@@ -231,12 +242,30 @@
 <!-- ─── 列印用資料列 ─── -->
 <div class="print-only px-6 py-2 text-xs text-slate-500 border-b border-gray-200" id="printMeta"></div>
 
+<!-- ─── A11y skip link ─── -->
+<a href="#assessmentForm" class="skip-link">跳至表單</a>
+
 <!-- ─── Header 頂部彩帶 ─── -->
 <div class="brand-stripe no-print"></div>
 
 <!-- ─── Header ─── -->
-<header class="w-full bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-100 py-3 px-4 shrink-0 z-10 no-print">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+<header class="w-full backdrop-blur-sm shadow-sm border-b border-slate-100 py-3 px-4 shrink-0 z-10 no-print relative overflow-hidden"
+        style="background:linear-gradient(135deg, rgba(255,247,237,0.96) 0%, rgba(245,243,255,0.92) 50%, rgba(255,255,255,0.95) 100%);">
+    <!-- 極簡 AI 電路背景裝飾（subtle） -->
+    <svg class="absolute inset-0 w-full h-full opacity-[0.06] pointer-events-none" aria-hidden="true" viewBox="0 0 1200 80" preserveAspectRatio="none">
+        <g fill="none" stroke="#0f9e9b" stroke-width="0.8" stroke-linecap="round">
+            <path d="M0 40 L80 40 L100 20 L180 20 L200 40 L320 40 L340 60 L420 60 L440 40 L560 40 L580 20 L700 20 L720 40 L840 40 L860 60 L980 60 L1000 40 L1200 40"/>
+            <circle cx="100" cy="20" r="2" fill="#0f9e9b"/>
+            <circle cx="200" cy="40" r="2" fill="#0f9e9b"/>
+            <circle cx="340" cy="60" r="2" fill="#0f9e9b"/>
+            <circle cx="440" cy="40" r="2" fill="#0f9e9b"/>
+            <circle cx="580" cy="20" r="2" fill="#0f9e9b"/>
+            <circle cx="720" cy="40" r="2" fill="#0f9e9b"/>
+            <circle cx="860" cy="60" r="2" fill="#0f9e9b"/>
+            <circle cx="1000" cy="40" r="2" fill="#0f9e9b"/>
+        </g>
+    </svg>
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 relative z-10">
         <!-- Logo + 標題 -->
         <div class="flex items-center gap-3">
             <div class="w-11 h-11 flex-shrink-0 drop-shadow flex-shrink-0">
@@ -256,10 +285,10 @@
             <div>
                 <div class="title-accent"></div>
                 <h1 class="text-lg md:text-xl font-serif font-bold text-navy tracking-wide leading-tight">
-                    健康管理評估建議
+                    健康管理評估紀錄
                 </h1>
                 <p class="text-xs md:text-sm font-medium tracking-wide" style="color:#0f9e9b">
-                    專屬28天行動計畫
+                    28天追蹤參考工具
                 </p>
             </div>
         </div>
@@ -296,8 +325,12 @@
                 </div>
                 <div>
                     <h2 class="text-base font-serif font-bold text-navy">身體數據輸入</h2>
-                    <p class="text-xs text-slate-400 mt-0.5">變更任一欄位即時重新計算</p>
+                    <p class="text-xs text-slate-400 mt-0.5">一般成人估算，變更任一欄位即時重新計算</p>
                 </div>
+            </div>
+
+            <div class="notice-box mb-5 text-sm leading-relaxed text-slate-600">
+                <strong>使用提醒：</strong>本工具僅依您輸入的基本資料進行一般估算，不能取代醫師、營養師或其他合格專業人員的評估。孕期、哺乳、未滿18歲、慢性病、腎臟病、糖尿病或正在服藥者，請先諮詢專業人員。
             </div>
 
             <form id="assessmentForm" class="flex flex-col gap-4">
@@ -325,7 +358,7 @@
                                class="form-input w-full px-4 py-3 text-base"
                                aria-describedby="ageError">
                         <p id="ageError" class="hidden text-xs text-red-500 mt-1">
-                            請輸入 1–120 歲
+                            請輸入 18–80 歲
                         </p>
                     </div>
                 </div>
@@ -373,12 +406,15 @@
                     </div>
                 </div>
 
-                <!-- 肥胖類型 -->
+                <!-- 生活型態觀察 -->
                 <div>
                     <label class="block text-sm font-semibold text-slate-500 mb-3 tracking-wide">
-                        肥胖類型 <span class="normal-case font-normal text-slate-400">(可複選)</span>
+                        生活型態觀察 <span class="normal-case font-normal text-slate-400">(可複選)</span>
                     </label>
                     <div id="chipContainer" class="flex flex-wrap gap-2"></div>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                        這些選項只用來整理自我觀察重點，不代表醫療診斷或特定體質判定。
+                    </p>
                 </div>
 
             </form>
@@ -421,16 +457,16 @@
                 </div>
                 <div>
                     <div class="title-accent"></div>
-                    <h2 class="text-base font-serif font-bold text-navy">專屬 28 天行動計畫</h2>
+                    <h2 class="text-base font-serif font-bold text-navy">28 天追蹤參考</h2>
                 </div>
             </div>
-            <!-- 達標預估 -->
+            <!-- 追蹤週期 -->
             <div id="daysCard"
-                 class="hidden text-center px-3 py-2 rounded-xl border"
+                 class="text-center px-3 py-2 rounded-xl border"
                  style="background:rgba(15,158,155,0.08); border-color:rgba(15,158,155,0.25)">
-                <p class="text-xs text-slate-400">預估達標</p>
-                <p class="text-lg font-bold leading-none" style="color:#0f9e9b" id="resDays">--</p>
-                <p class="text-[10px] text-slate-400 mt-0.5">天後</p>
+                <p class="text-xs text-slate-400">建議觀察</p>
+                <p class="text-lg font-bold leading-none" style="color:#0f9e9b" id="resDays">28</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">天趨勢</p>
             </div>
         </div>
 
@@ -470,7 +506,7 @@
             <div class="grid grid-cols-2 gap-2.5">
                 <div class="stat-card stat-card-navy flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold text-slate-400">標準體重 (BMI=22)</p>
+                        <p class="text-xs font-semibold text-slate-400">參考體重 (BMI=22)</p>
                         <p class="text-xl font-bold text-navy leading-none mt-1">
                             <span id="resStdWeight">--</span>
                             <span class="text-xs font-normal text-slate-400"> kg</span>
@@ -482,7 +518,7 @@
                     </div>
                 </div>
                 <div class="stat-card stat-card-teal flex flex-col justify-center">
-                    <p class="text-xs font-semibold text-slate-400">標準健康體脂率</p>
+                        <p class="text-xs font-semibold text-slate-400">參考健康體脂率</p>
                     <p class="text-xl font-bold text-teal leading-none mt-1" id="resStdBF">--</p>
                 </div>
             </div>
@@ -494,7 +530,7 @@
                 <div class="stat-card stat-card-teal flex flex-col gap-2">
                     <h3 class="text-base font-serif font-bold text-navy flex items-center gap-2">
                         <i class="ph-fill ph-fork-knife text-lg" style="color:#d4870a"></i>
-                        建議攝取熱量
+                        估算攝取熱量
                     </h3>
                     <div class="flex items-center gap-3">
                         <div class="rounded-xl px-4 py-3 text-center shrink-0 border"
@@ -504,11 +540,11 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-base text-slate-600 leading-relaxed">
-                                選擇<span class="font-bold text-teal">低升糖</span>原型食物，優先補充<span class="font-bold text-navy">蛋白質</span>。
+                                優先選擇原型食物，搭配足量蔬菜與蛋白質來源，並依實際狀況調整。
                             </p>
                             <p id="caloriesWarning"
                                class="hidden text-sm font-bold text-amber-600 mt-1">
-                                ⚠️ 已調整至安全最低值
+                                已套用一般成人估算下限；特殊族群請先諮詢專業人員。
                             </p>
                         </div>
                     </div>
@@ -518,7 +554,7 @@
                 <div class="stat-card stat-card-navy flex flex-col gap-2">
                     <h3 class="text-base font-serif font-bold text-navy flex items-center gap-2">
                         <i class="ph-fill ph-drop text-lg text-teal"></i>
-                        每日建議飲水
+                        估算飲水量
                     </h3>
                     <div class="flex items-center gap-3">
                         <div class="rounded-xl px-4 py-3 text-center shrink-0 border"
@@ -527,7 +563,7 @@
                             <p class="text-sm text-slate-400 mt-1">ml / 天</p>
                         </div>
                         <p class="text-base text-slate-600 leading-relaxed flex-1">
-                            每早起床第一件事：記錄<span class="font-bold text-navy">體重與體脂</span>。
+                            可固定時間記錄體重、腰圍或體脂趨勢，重點看長期變化。
                         </p>
                     </div>
                 </div>
@@ -536,7 +572,7 @@
                 <div class="stat-card stat-card-gold flex flex-col gap-2">
                     <h3 class="text-base font-serif font-bold text-navy flex items-center gap-2">
                         <i class="ph-fill ph-egg text-lg" style="color:#d4870a"></i>
-                        蛋白質建議攝取
+                        蛋白質攝取參考
                     </h3>
                     <div class="flex items-center gap-3">
                         <div class="rounded-xl px-4 py-3 text-center shrink-0 border"
@@ -545,25 +581,29 @@
                             <p class="text-sm text-slate-400 mt-1">g / 天</p>
                         </div>
                         <p class="text-base text-slate-600 leading-relaxed flex-1">
-                            減重期維持<span class="font-bold" style="color:#d4870a">肌肉量</span>的關鍵，建議分散三餐攝取。
+                            可分散於三餐攝取；若有腎臟病、肝臟病或特殊飲食限制，請先詢問專業人員。
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- ── 專屬營養輔助建議 ── -->
+            <!-- ── 生活型態觀察重點 ── -->
             <div class="rounded-2xl p-4 flex flex-col gap-2"
                  style="background:linear-gradient(145deg,rgba(15,158,155,0.07) 0%,rgba(15,158,155,0.03) 100%);
                         border: 1.5px solid rgba(15,158,155,0.20)">
                 <h3 class="text-base font-serif font-bold text-navy flex items-center gap-2">
-                    <i class="ph-fill ph-pill text-lg" style="color:#d4870a"></i>
-                    專屬營養輔助建議
-                    <span class="text-sm font-normal text-slate-400 ml-auto">依肥胖類型智能配對</span>
+                    <i class="ph-fill ph-list-checks text-lg" style="color:#d4870a"></i>
+                    生活型態觀察重點
+                    <span class="text-sm font-normal text-slate-400 ml-auto">依勾選項目整理</span>
                 </h3>
                 <p class="text-base text-slate-500 leading-relaxed">
-                    根據您勾選的肥胖類型，系統為您統整並配對以下抗氧化與輔助方案：
+                    系統會依勾選項目整理可優先觀察的生活習慣，方便和課程顧問或專業人員討論：
                 </p>
                 <div id="supplementList" class="flex flex-wrap gap-2 text-base font-medium"></div>
+            </div>
+
+            <div class="notice-box text-sm leading-relaxed text-slate-600">
+                <strong>資料分享提醒：</strong>複製 LINE 摘要前，請確認您同意分享性別、年齡、身高、體重與估算結果等個人健康資料。建議只傳給課程顧問或您信任的專業人員。
             </div>
 
             <!-- ── 核心理念 ── -->
@@ -578,9 +618,9 @@
                    style="color:rgba(255,255,255,0.08)"></i>
                 <p class="relative z-10 text-sm md:text-base font-serif leading-relaxed font-light tracking-wide m-0"
                    style="color:rgba(255,255,255,0.88)">
-                    「任何果都有因，健康沒有捷徑。只有踏實執行這 28 天計畫，不斷充實健康知識，
+                    「健康管理看的是趨勢，不是單一天的數字。持續記錄、穩定調整，
                     <span class="font-bold" style="color:#f5c158">
-                        身體一定會給你最理想的回饋。
+                        才能更了解自己的身體狀態。
                     </span>」
                 </p>
             </div>
@@ -602,8 +642,8 @@ document.addEventListener('DOMContentLoaded', () => {
        1. 版本配置物件
        ──────────────────────────────────────────── */
     const APP_CONFIG = Object.freeze({
-        version:           '3.2.0',
-        buildDate:         '2026-04-23',
+        version:           '3.3.0',
+        buildDate:         '2026-06-20',
 
         calorieDeficit:    400,
         waterRatioBase:    35,
@@ -613,9 +653,8 @@ document.addEventListener('DOMContentLoaded', () => {
         proteinMaxRatio:   1.6,
         minCalMale:        1500,
         minCalFemale:      1200,
-        kcalPerKg:         7700,
 
-        ageMin: 1,   ageMax: 120,
+        ageMin: 18,  ageMax: 80,
         heightMin: 100, heightMax: 250,
         weightMin: 20,  weightMax: 300,
 
@@ -630,17 +669,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ────────────────────────────────────────────
-       2. 肥胖類型資料
+       2. 生活型態觀察資料
        ──────────────────────────────────────────── */
     const OBESITY_DATA = [
-        { label: '遺傳',        supps: ['GL P-1'] },
-        { label: '不運動',      supps: ['辣木葉'] },
-        { label: '零食控',      supps: ['芒果茶'] },
-        { label: '澱粉控',      supps: ['白腎豆'] },
-        { label: '壓力及久坐',  supps: ['綜合維他命', '優質魚油', '具有抗氧化成份營養品'], defaultOn: true },
-        { label: '不太清楚',    supps: ['辣木葉', '芒果茶', '綜合維他命', '優質魚油', '具有抗氧化成份營養品'] },
-        { label: '喝水都胖',    supps: ['辣木葉', '芒果茶', '白腎豆', '綜合維他命', '優質魚油',
-                                        '具有抗氧化成份營養品', 'GL P-1', '高纖飲料'] },
+        { label: '久坐時間較長',    focus: '安排固定起身活動，先從每天增加步行與伸展開始', defaultOn: true },
+        { label: '外食頻率較高',    focus: '優先留意主食份量、油脂來源與蔬菜比例' },
+        { label: '甜食零食較頻繁',  focus: '記錄甜食與零食出現的時間點，先找可替代的點心選項' },
+        { label: '精緻澱粉較多',    focus: '觀察白飯、麵包、麵食與含糖飲品頻率，逐步提高原型食物比例' },
+        { label: '睡眠壓力需留意',  focus: '先追蹤睡眠時數、壓力來源與晚間進食習慣' },
+        { label: '尚不確定',        focus: '連續記錄 3–7 天飲食、活動與睡眠，再和顧問討論優先調整項目' },
     ];
 
     /* 動態生成 Chip */
@@ -788,21 +825,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const protH = Math.round(weight * C.proteinMaxRatio);
         const stdBf = gender === 'male' ? '15% ~ 25%' : '20% ~ 30%';
 
-        let daysToGoal = null;
-        if (diff > 0 && !calWarn) {
-            daysToGoal = Math.ceil((diff * C.kcalPerKg) / C.calorieDeficit);
-        }
-
         const selectedTypes = [...checkboxes].filter(c => c.checked).map(c => c.value);
-        const suppSet = new Set();
-        OBESITY_DATA.forEach(({ label, supps }) => {
-            if (selectedTypes.includes(label)) supps.forEach(s => suppSet.add(s));
-        });
-        const uniqueSupps = [...suppSet];
+        const focusItems = OBESITY_DATA
+            .filter(({ label }) => selectedTypes.includes(label))
+            .map(({ focus }) => focus);
 
         return { bmi, bmr, tdee, targetCal, calWarn, minCal,
                  water, stdW, diff, proteinLow: protL, proteinHigh: protH, stdBf,
-                 daysToGoal, selectedTypes, uniqueSupps };
+                 selectedTypes, focusItems };
     }
 
     /* ────────────────────────────────────────────
@@ -830,34 +860,30 @@ document.addEventListener('DOMContentLoaded', () => {
         elCalWarn.classList.toggle('hidden', !r.calWarn);
 
         if (r.diff > 0) {
-            elDiff.innerHTML = `<span style="color:#e53e3e">超標 ${r.diff} kg</span>`;
+            elDiff.innerHTML = `<span style="color:#e53e3e">高於參考值 ${r.diff} kg</span>`;
         } else if (r.diff < 0) {
-            elDiff.innerHTML = `<span style="color:#0f9e9b">過輕 ${Math.abs(r.diff)} kg</span>`;
+            elDiff.innerHTML = `<span style="color:#0f9e9b">低於參考值 ${Math.abs(r.diff)} kg</span>`;
         } else {
-            elDiff.innerHTML = `<span style="color:#0f9e9b">完美達標 ✓</span>`;
+            elDiff.innerHTML = `<span style="color:#0f9e9b">接近參考值</span>`;
         }
 
-        if (r.daysToGoal && r.daysToGoal > 0 && r.daysToGoal < 1000) {
-            elDays.textContent = r.daysToGoal;
-            elDaysCard.classList.remove('hidden');
-        } else {
-            elDaysCard.classList.add('hidden');
-        }
+        elDays.textContent = '28';
+        elDaysCard.classList.remove('hidden');
 
         elSupps.innerHTML = '';
-        if (r.uniqueSupps.length === 0) {
+        if (r.focusItems.length === 0) {
             const span = document.createElement('span');
             span.className   = 'text-sm text-slate-400 italic';
-            span.textContent = '請於上方勾選肥胖類型以獲得建議';
+            span.textContent = '可先勾選生活型態觀察項目，建立討論重點';
             elSupps.appendChild(span);
         } else {
-            r.uniqueSupps.forEach(s => {
+            r.focusItems.forEach(s => {
                 const tag = document.createElement('div');
-                tag.className = 'flex items-center gap-1.5 bg-white rounded-xl shadow-sm px-3 py-1.5';
+                tag.className = 'flex items-start gap-1.5 bg-white rounded-xl shadow-sm px-3 py-2';
                 tag.setAttribute('style',
-                    'border: 1.5px solid rgba(15,158,155,0.30); color:#1d3461; font-size:15px');
+                    'border: 1.5px solid rgba(15,158,155,0.30); color:#1d3461; font-size:15px; line-height:1.55');
                 const icon = document.createElement('i');
-                icon.className = 'ph-fill ph-check-circle text-base';
+                icon.className = 'ph-fill ph-check-circle text-base mt-0.5';
                 icon.style.color = '#0f9e9b';
                 tag.appendChild(icon);
                 tag.appendChild(document.createTextNode(' ' + s));
@@ -922,14 +948,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const now    = new Date().toLocaleDateString('zh-TW',
                             { year:'numeric', month:'long', day:'numeric' });
         const bmiLbl = APP_CONFIG.bmiLabels[bmiIndex(r.bmi)];
-        const diffTxt = r.diff > 0 ? `超標 ${r.diff} kg`
-                      : r.diff < 0 ? `過輕 ${Math.abs(r.diff)} kg`
-                      : '完美達標';
-        const suppTxt = r.uniqueSupps.length > 0 ? r.uniqueSupps.join('、') : '（請勾選肥胖類型）';
+        const diffTxt = r.diff > 0 ? `高於參考值 ${r.diff} kg`
+                      : r.diff < 0 ? `低於參考值 ${Math.abs(r.diff)} kg`
+                      : '接近參考值';
+        const focusTxt = r.focusItems.length > 0
+            ? r.focusItems.map(item => `　- ${item}`).join('\n')
+            : '　- 尚未勾選，可先記錄 3–7 天飲食、活動與睡眠狀況';
         const typeTxt = r.selectedTypes.length > 0 ? r.selectedTypes.join('、') : '未選擇';
-        const daysTxt = (r.daysToGoal && r.daysToGoal < 1000)
-                      ? `　⏱️ 預估達標：${r.daysToGoal} 天後\n`
-                      : '';
 
         const actEl    = document.getElementById('activity');
         const actLabel = actEl.options[actEl.selectedIndex].text;
@@ -947,20 +972,20 @@ document.addEventListener('DOMContentLoaded', () => {
             `　BMI：${r.bmi}（${bmiLbl}）`,
             `　BMR 基礎代謝：${r.bmr.toLocaleString()} kcal`,
             `　TDEE 總消耗：${r.tdee.toLocaleString()} kcal`,
-            `　標準體重：${r.stdW} kg（目前 ${diffTxt}）`,
-            `　標準體脂率：${r.stdBf}`,
+            `　BMI=22 參考體重：${r.stdW} kg（目前 ${diffTxt}）`,
+            `　參考健康體脂率：${r.stdBf}`,
             ``,
-            `🥗 28 天行動計畫`,
-            `　✅ 每日建議熱量：${r.targetCal.toLocaleString()} kcal${r.calWarn ? '（已調整至安全最低值）' : ''}`,
-            `　💧 每日飲水量：${r.water.toLocaleString()} ml`,
-            `　🥩 蛋白質攝取：${r.proteinLow}–${r.proteinHigh} g`,
-            daysTxt.trim(),
+            `🥗 28 天追蹤參考`,
+            `　每日估算熱量：${r.targetCal.toLocaleString()} kcal${r.calWarn ? '（已套用一般成人估算下限）' : ''}`,
+            `　估算飲水量：${r.water.toLocaleString()} ml`,
+            `　蛋白質攝取參考：${r.proteinLow}–${r.proteinHigh} g`,
             ``,
-            `💊 專屬營養輔助建議`,
-            `　肥胖類型：${typeTxt}`,
-            `　建議產品：${suppTxt}`,
+            `📝 生活型態觀察`,
+            `　勾選項目：${typeTxt}`,
+            focusTxt,
             ``,
-            `💬 「健康沒有捷徑，踏實執行 28 天，身體一定會給你最理想的回饋！」`,
+            `提醒：以上為一般估算與紀錄參考，不能取代醫師、營養師或其他合格專業人員的評估。`,
+            `複製分享前，請確認您同意分享以上個人健康資料。`,
         ].filter(l => l !== undefined).join('\n');
     }
 
@@ -1007,7 +1032,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnReset').addEventListener('click', () => {
         form.reset();
         checkboxes.forEach(cb => {
-            cb.checked = (cb.value === '壓力及久坐');
+            cb.checked = (cb.value === '久坐時間較長');
         });
         try { localStorage.removeItem(LS_KEY); } catch {}
         calculateData();
@@ -1034,6 +1059,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }); // DOMContentLoaded
 </script>
+
+<!-- ─── Footer 免責區塊 ─── -->
+<footer class="no-print mt-8 px-4 pb-10">
+    <div class="max-w-2xl mx-auto rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-5 text-xs text-slate-500 leading-relaxed space-y-3">
+        <div>
+            <h3 class="text-sm font-serif font-bold text-navy mb-2 flex items-center gap-2">
+                <i class="ph ph-info text-base" style="color:#d4870a"></i> 重要聲明
+            </h3>
+            <p>本工具僅依您輸入的基本資料進行一般估算，<strong>不是醫療診斷、不是治療建議、不能用於任何醫療目的</strong>。所有數值（BMI、BMR、TDEE、參考體重、估算熱量、估算飲水量、蛋白質攝取參考）皆為一般成人估算公式的計算結果，僅供個人紀錄與課程討論參考。</p>
+        </div>
+        <div>
+            <h3 class="text-sm font-serif font-bold text-navy mb-2 flex items-center gap-2">
+                <i class="ph ph-shield-check text-base" style="color:#0f9e9b"></i> 適用對象與限制
+            </h3>
+            <p>適用於 18–80 歲一般成人。<strong>孕期、哺乳、未滿 18 歲、慢性病、腎臟病、肝臟病、糖尿病、正在服藥、特殊飲食限制者，請先諮詢醫師、營養師或其他合格專業人員</strong>，勿以本工具結果替代專業判斷。</p>
+        </div>
+        <div>
+            <h3 class="text-sm font-serif font-bold text-navy mb-2 flex items-center gap-2">
+                <i class="ph ph-lock-key text-base" style="color:#1d3461"></i> 資料隱私
+            </h3>
+            <p>本工具所有運算皆在您的裝置上完成（純前端），<strong>資料不會上傳到任何伺服器</strong>。輸入內容僅儲存於您瀏覽器的 localStorage 供下次開啟時自動帶入。您可隨時清除瀏覽器資料或按「重設」按鈕刪除。</p>
+        </div>
+        <div>
+            <h3 class="text-sm font-serif font-bold text-navy mb-2 flex items-center gap-2">
+                <i class="ph ph-share-network text-base" style="color:#0f9e9b"></i> 分享前提醒
+            </h3>
+            <p>使用「複製 LINE 摘要」前，請再次確認您同意分享性別、年齡、身高、體重與估算結果等個人健康資料。建議只傳給您信任的課程顧問或專業人員。</p>
+        </div>
+        <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+            <span>28天健康管理紀錄 · 估算工具</span>
+            <span>v3.3.0 · 2026-06-20 · 一般成人估算</span>
+        </div>
+    </div>
+</footer>
+
+<!-- ─── 列印時也顯示簡短聲明 ─── -->
+<style>
+@media print {
+    .print-footer {
+        display: block !important;
+        page-break-before: always;
+        padding: 20px;
+        font-size: 10pt;
+        line-height: 1.6;
+        color: #334155;
+    }
+}
+.print-footer { display: none; }
+</style>
+<div class="print-footer">
+    <p><strong>重要聲明：</strong>本工具僅依您輸入的基本資料進行一般估算，不是醫療診斷、不是治療建議。孕期、哺乳、未滿 18 歲、慢性病、腎臟病、肝臟病、糖尿病、正在服藥者請先諮詢專業人員。所有數值（BMI、BMR、TDEE、估算熱量、估算飲水、蛋白質攝取）為一般成人估算公式結果，僅供個人紀錄與課程討論參考。</p>
+    <p style="margin-top:8px;">28天健康管理紀錄 · 估算工具 v3.3.0 · 2026-06-20</p>
+</div>
+
+<style>
+/* Skip link for keyboard users */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: #1d3461;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 0 0 8px 8px;
+    z-index: 100;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.skip-link:focus { left: 8px; }
+</style>
 
 </body>
 </html>
